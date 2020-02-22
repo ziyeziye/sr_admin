@@ -56,11 +56,11 @@
       init (id) {
         this.dataForm.id = id || 0
         this.$http({
-          url: this.$http.adornUrl('/web/sys/controller/menu/list'),
+          url: this.$http.adornUrl('/api/menus'),
           method: 'get',
           params: this.$http.adornParams()
         }).then(({data}) => {
-          this.menuList = treeDataTranslate(data.result, 'id')
+          this.menuList = treeDataTranslate(data.result, 'id', 'parent_id')
         }).then(() => {
           this.visible = true
           this.$nextTick(() => {
@@ -70,14 +70,14 @@
         }).then(() => {
           if (this.dataForm.id) {
             this.$http({
-              url: this.$http.adornUrl(`/web/sys/controller/role/info`),
+              url: this.$http.adornUrl(`/api/roles/${this.dataForm.id}/menu`),
               method: 'get',
               params: this.$http.adornParams({
                 'id': this.dataForm.id
               })
             }).then(({data}) => {
               if (data && data.code === 200) {
-                this.dataForm.roleName = data.result.roleName
+                this.dataForm.roleName = data.result.role_name
                 this.dataForm.remark = data.result.remark
                 var idx = data.result.menuIdList.indexOf(this.tempKey)
                 if (idx !== -1) {
@@ -94,11 +94,11 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl(`/web/sys/controller/role/${!this.dataForm.id ? 'save' : 'update'}`),
-              method: 'post',
+              url: this.$http.adornUrl(`/api/roles${!this.dataForm.id ? '' : '/' + this.dataForm.id}`),
+              method: `${!this.dataForm.id ? 'post' : 'put'}`,
               data: this.$http.adornData({
                 'id': this.dataForm.id || null,
-                'roleName': this.dataForm.roleName,
+                'role_name': this.dataForm.roleName,
                 'remark': this.dataForm.remark,
                 'menuIdList': [].concat(this.$refs.menuListTree.getCheckedKeys(), [this.tempKey], this.$refs.menuListTree.getHalfCheckedKeys())
               })

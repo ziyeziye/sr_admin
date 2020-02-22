@@ -18,7 +18,7 @@ function var_print()
     is_bool($exit) && !$exit ?: exit();
 }
 
-function get_page($pageName = "page", $sizeName = "size")
+function get_page($pageName = "pageNum", $sizeName = "pageSize")
 {
     $page = request()->input($pageName, null);
     $page = !is_numeric($page) ? 1 : $page;
@@ -26,7 +26,7 @@ function get_page($pageName = "page", $sizeName = "size")
     $size = request()->input($sizeName, 15);
     $size = !is_numeric($size) ? 15 : $size;
 
-    return ["page" => $page, "sizes" => $size];
+    return [$page, $size];
 }
 
 /**

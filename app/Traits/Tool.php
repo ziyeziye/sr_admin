@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\Events\DataOperation;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 trait Tool
 {
@@ -81,6 +82,37 @@ trait Tool
     {
 //        $roles = explode(',', Auth::user()->roles);
 //        return in_array('admin', $roles);
+    }
+
+    /**
+     * @param array $rules 验证规则
+     * @param array $messages 自定义错误
+     * @param bool $reMsgArr 返回错误数组
+     * @param array|null $data 验证数据集
+     * @param bool $reValid 返回验证器
+     * @return bool|\Illuminate\Contracts\Validation\Validator
+     * @throws \Exception
+     */
+    protected function _valid(array $rules, array $messages = [], $reMsgArr = false, array $data = null, $reValid = false)
+    {
+        if (is_null($data)) {
+            $data = request()->all();
+        }
+
+        $validator = Validator::make($data, $rules, $messages);
+        if ($validator->fails()) {
+            if ($reValid) {
+                return $validator;
+            }
+            //TODO:返回错误消息数组
+            if ($reMsgArr) {
+                $msgs = $validator->errors()->toArray();
+            }
+
+            return $validator->errors()->first();
+        }
+
+        return true;
     }
 
 }

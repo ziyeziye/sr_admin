@@ -66,7 +66,7 @@ router.beforeEach((to, from, next) => {
     next()
   } else {
     http({
-      url: http.adornUrl('/api/roles/menus'),
+      url: http.adornUrl('/api/admin/login_perms'),
       method: 'get',
       params: http.adornParams()
     }).then(({data}) => {

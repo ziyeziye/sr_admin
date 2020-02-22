@@ -30,7 +30,7 @@
         label="ID">
       </el-table-column>
       <el-table-column
-        prop="roleName"
+        prop="role_name"
         header-align="center"
         align="center"
         label="角色名称">
@@ -42,14 +42,14 @@
         label="备注">
       </el-table-column>
       <el-table-column
-        prop="createAdminId"
+        prop="create_admin_id"
         header-align="center"
         align="center"
         width="180"
         label="创建人Id">
       </el-table-column>
       <el-table-column
-        prop="createTime"
+        prop="create_time"
         header-align="center"
         align="center"
         width="180"
@@ -71,7 +71,7 @@
       @size-change="sizeChangeHandle"
       @current-change="currentChangeHandle"
       :current-page="pageIndex"
-      :page-sizes="[10, 20, 50, 100]"
+      :page-sizes="[5, 10, 15, 20]"
       :page-size="pageSize"
       :total="totalPage"
       layout="total, sizes, prev, pager, next, jumper">
@@ -109,16 +109,16 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/web/sys/controller/role/list'),
+          url: this.$http.adornUrl('/api/roles'),
           method: 'get',
           params: this.$http.adornParams({
             'pageNum': this.pageIndex,
             'pageSize': this.pageSize,
-            'roleName': this.dataForm.roleName || null
+            'role_name': this.dataForm.roleName || null
           })
         }).then(({data}) => {
           if (data && data.code === 200) {
-            this.dataList = data.result.list
+            this.dataList = data.result.data
             this.totalPage = data.result.total
           } else {
             this.dataList = []
@@ -160,7 +160,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/web/sys/controller/role/delete'),
+            url: this.$http.adornUrl('/api/roles'),
             method: 'delete',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {

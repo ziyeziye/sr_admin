@@ -47,9 +47,9 @@ class AdminLoginController extends BaseController
     public function login(Request $request)
     {
         // 验证码
-//        if (strtolower(session('CAPTCHA_IMG')) !== strtolower($request->get('captcha'))) {
-//            return $this->errorWithMsg('验证码输入错误', 402);
-//        }
+        if (strtolower(session('CAPTCHA_IMG')) !== strtolower($request->get('captcha'))) {
+            return $this->errorWithMsg('验证码输入错误', 402);
+        }
         // 1. 获取前端发来的用户名和密码
         $username = $request->input('name');
         $password = $request->input('password');
@@ -73,14 +73,15 @@ class AdminLoginController extends BaseController
             return $this->proxy($username, $password);
         } else {
             //4. 不成功，则提示用户名或者密码出错
-            print_r("sss");
-            die;
             return $this->errorWithMsg('用户名或密码错误', 1023);
         }
     }
 
     public function logout()
     {
+        Auth::logout();
+        return $this->successWithMsg('退出成功');
+
 //        1. 获取现在登录的用户信息
         $user = Auth::guard('api')->user();
         event(new UserLogout($user));
@@ -94,9 +95,7 @@ class AdminLoginController extends BaseController
         cookie()->forget('refresh_token');
 //        3. 让活动令牌失效
         $accessToken->revoke();
-//
 
-        return $this->successWithInfo('退出成功');
 
     }
 

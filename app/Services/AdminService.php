@@ -4,55 +4,79 @@ namespace App\Services;
 
 
 use App\Models\Admin;
+use App\Models\AdminRole;
 
 class AdminService extends BaseService
 {
     public static function table($param = [], int $page = null, int $size = 15)
     {
-        $where = [];
-        if (isset($param['store_id']) && is_numeric($param['store_id'])) {
-            $where['store_id'] = $param['store_id'];
+        $query = Admin::query();
+        if (isset($param['name']) && !empty($param['name'])) {
+            $query = $query->where("name", "like", "%{$param['name']}%");
         }
-        $query = Admin::where($where);
-        $data = Admin::ModelSearch($query, $param, $page, $size);
-        return $data;
+        return Admin::ModelSearch($query, $param, $page, $size);
     }
 
-    public static function ListToTree($list, $primaryKey = 'id', $parentKey = 'pid', $childStr = 'children', $root = 0, array &$tree)
+    public static function save($data)
     {
-
-        if (is_array($list)) {
-
-            //创建基于主键的数组引用
-            $refer = array();
-
-            foreach ($list as $key => $data) {
-                $refer[$data[$primaryKey]] = &$list[$key];
+        $roleIdList = isset($data["roleIdList"]) ? $data["roleIdList"] : [];
+        unset($data["roleIdList"]);
+        $mod = Admin::create($data);
+        if ($mod && !empty($roleIdList)) {
+            $temp = [];
+            foreach ($roleIdList as $item) {
+                $temp[] = ['role_id' => $item, 'admin_id' => $mod->id];
             }
+            AdminRole::insert($temp);
+        }
+        return $mod;
+    }
 
-            foreach ($list as $key => $data) {
+    public static function update($data, $id)
+    {
+        $roleIdList = isset($data["roleIdList"]) ? $data["roleIdList"] : [];
+        unset($data["roleIdList"]);
 
-                //判断是否存在parent
-                $parantId = $data[$parentKey];
-
-                if ($root == $parantId) {
-
-
-                    $tree[] = &$list[$key];
-
-                } else {
-
-                    if (isset($refer[$parantId])) {
-                        $parent = &$refer[$parantId];
-                        $parent[$childStr][] = &$list[$key];
-                    }
-
+        $info = Admin::find($id);
+        if ($info) {
+            if (isset($data["name"]) && $data["name"] != $info->name) {
+                if (Admin::where("name", $data["name"])->exists()) {
+                    return false;
                 }
             }
-        }
 
-        return $tree;
+            $info->update($data);
+            AdminRole::where("admin_id", $id)->delete();
+            if (!empty($roleIdList)) {
+                $temp = [];
+                foreach ($roleIdList as $item) {
+                    $temp[] = ['role_id' => $item, 'admin_id' => $id];
+                }
+                AdminRole::insert($temp);
+            }
+        }
+        return $info;
     }
 
+    public static function delete($ids)
+    {
+        if (!empty($ids)) {
+            if (Admin::whereIn("id", $ids)->delete()) {
+                AdminRole::whereIn("admin_id", $ids)->delete();
+                return true;
+            }
+        }
+        return false;
+    }
 
+    public static function userRole($id)
+    {
+        $info = Admin::find($id);
+        if ($info) {
+            $info->setAttribute("roleIdList", $roles_id = $info->roles->map(function ($role) {
+                return $role->id;
+            }));
+        }
+        return $info;
+    }
 }

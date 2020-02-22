@@ -19,6 +19,9 @@ class Admin extends Authenticatable
     use ModelTraits;
     use Notifiable;
 
+    const CREATED_AT = 'create_time';
+    const UPDATED_AT = 'update_time';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -71,8 +74,8 @@ class Admin extends Authenticatable
         return $token;
     }
 
-    public function assets()
+    public function roles()
     {
-        return $this->hasMany('App\Models\Asset', "user_id");
+        return $this->belongsToMany('App\Models\Role', 'admin_roles', 'admin_id', 'role_id')->withPivot('admin_id', 'role_id');
     }
 }

@@ -23,7 +23,7 @@
       },
       parentKey: {
         type: String,
-        default: 'parentId'
+        default: 'parent_id'
       },
       levelKey: {
         type: String,

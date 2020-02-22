@@ -14,4 +14,14 @@ class Role extends BaseModel
         'update_admin_id',
         'update_time',
     ];
+
+    public function menus()
+    {
+        return $this->belongsToMany('App\Models\Menu', 'role_menus', 'role_id', 'menu_id')->withPivot(['role_id', 'menu_id']);
+    }
+
+    public function roleMenus()
+    {
+        return $this->hasMany('App\Models\RoleMenu');
+    }
 }

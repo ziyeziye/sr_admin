@@ -2,7 +2,7 @@
   <div class="mod-menu">
     <el-form :inline="true" :model="dataForm">
       <el-form-item>
-        <el-button v-if="isAuth('sys:menu:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button @click="addOrUpdateHandle()" type="primary" v-if="isAuth('sys:menu:save')">新增</el-button>
       </el-form-item>
     </el-form>
 
@@ -11,88 +11,92 @@
       border
       style="width: 100%;">
       <el-table-column
-        prop="id"
-        header-align="center"
         align="center"
-        width="80"
-        label="ID">
+        header-align="center"
+        label="ID"
+        prop="id"
+        width="80">
       </el-table-column>
       <table-tree-column
-        prop="name"
         header-align="center"
+        label="名称"
         min-width="150"
-        label="名称" >
+        prop="name">
       </table-tree-column>
       <el-table-column
-        prop="parentName"
-        header-align="center"
         align="center"
-        width="120"
-        label="上级菜单">
+        header-align="center"
+        label="上级菜单"
+        prop="parent_name"
+        width="120">
       </el-table-column>
       <el-table-column
-        header-align="center"
         align="center"
+        header-align="center"
         label="图标">
         <template slot-scope="scope">
           <icon-svg :name="scope.row.icon || ''"></icon-svg>
         </template>
       </el-table-column>
       <el-table-column
-        prop="type"
-        header-align="center"
         align="center"
-        label="类型">
+        header-align="center"
+        label="类型"
+        prop="type">
         <template slot-scope="scope">
-          <el-tag v-if="scope.row.type === 0" size="small">目录</el-tag>
-          <el-tag v-else-if="scope.row.type === 1" size="small" type="success">菜单</el-tag>
-          <el-tag v-else-if="scope.row.type === 2" size="small" type="info">按钮</el-tag>
+          <el-tag size="small" v-if="scope.row.type === 0">目录</el-tag>
+          <el-tag size="small" type="success" v-else-if="scope.row.type === 1">菜单</el-tag>
+          <el-tag size="small" type="info" v-else-if="scope.row.type === 2">按钮</el-tag>
         </template>
       </el-table-column>
       <el-table-column
-        prop="orders"
-        header-align="center"
         align="center"
-        label="排序号">
+        header-align="center"
+        label="排序号"
+        prop="orders">
       </el-table-column>
       <el-table-column
+        :show-overflow-tooltip="true"
+        align="center"
+        header-align="center"
+        label="菜单URL"
         prop="url"
-        header-align="center"
-        align="center"
-        width="150"
-        :show-overflow-tooltip="true"
-        label="菜单URL">
+        width="150">
       </el-table-column>
       <el-table-column
+        :show-overflow-tooltip="true"
+        align="center"
+        header-align="center"
+        label="授权标识"
         prop="perms"
-        header-align="center"
-        align="center"
-        width="150"
-        :show-overflow-tooltip="true"
-        label="授权标识">
+        width="150">
       </el-table-column>
       <el-table-column
+        align="center"
         fixed="right"
         header-align="center"
-        align="center"
-        width="150"
-        label="操作">
+        label="操作"
+        width="150">
         <template slot-scope="scope">
-          <el-button v-if="isAuth('sys:menu:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-          <el-button v-if="isAuth('sys:menu:delete')" type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
+          <el-button @click="addOrUpdateHandle(scope.row.id)" size="small" type="text" v-if="isAuth('sys:menu:update')">
+            修改
+          </el-button>
+          <el-button @click="deleteHandle(scope.row.id)" size="small" type="text" v-if="isAuth('sys:menu:delete')">删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <!-- 弹窗, 新增 / 修改 -->
-    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
+    <add-or-update @refreshDataList="getDataList" ref="addOrUpdate" v-if="addOrUpdateVisible"></add-or-update>
   </div>
 </template>
 
 <script>
   import TableTreeColumn from '@/components/table-tree-column'
   import AddOrUpdate from './menu-add-or-update'
-  import { treeDataTranslate } from '@/utils'
+  import {treeDataTranslate} from '@/utils'
+
   export default {
     data () {
       return {
@@ -114,11 +118,11 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/web/sys/controller/menu/list'),
+          url: this.$http.adornUrl('/api/menus'),
           method: 'get',
           params: this.$http.adornParams()
         }).then(({data}) => {
-          this.dataList = treeDataTranslate(data.result, 'id')
+          this.dataList = treeDataTranslate(data.result, 'id', 'parent_id')
           this.dataListLoading = false
         })
       },
@@ -137,7 +141,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl(`/web/sys/controller/menu/delete`),
+            url: this.$http.adornUrl(`/api/menus`),
             method: 'delete',
             data: this.$http.adornData(id, false)
           }).then(({data}) => {
@@ -154,7 +158,8 @@
               this.$message.error(data.msg)
             }
           })
-        }).catch(() => {})
+        }).catch(() => {
+        })
       }
     }
   }
