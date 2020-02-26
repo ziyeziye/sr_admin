@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Events\UserLogin;
-use App\Events\UserLogout;
 use App\Http\Controllers\BaseController;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
@@ -47,7 +45,8 @@ class AdminLoginController extends BaseController
     public function login(Request $request)
     {
         // 验证码
-        if (strtolower(session('CAPTCHA_IMG')) !== strtolower($request->get('captcha'))) {
+        $captcha = $request->get('captcha',"");
+        if (strtolower(session('CAPTCHA_IMG')) !== strtolower($captcha)) {
             return $this->errorWithMsg('验证码输入错误', 402);
         }
         // 1. 获取前端发来的用户名和密码

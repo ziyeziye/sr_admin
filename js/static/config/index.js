@@ -5,7 +5,7 @@
   window.SITE_CONFIG = {};
 
   // api接口请求地址
-  window.SITE_CONFIG['baseUrl'] = 'http://127.0.0.1:8000';
+  window.SITE_CONFIG['baseUrl'] = 'http://127.0.0.1:8082';
   // window.SITE_CONFIG['baseUrl'] = 'http://web.dtguai.com';
 
   // cdn地址 = 域名 + 版本号

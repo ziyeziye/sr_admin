@@ -2,80 +2,98 @@
 
 namespace App\Traits;
 
-use App\Events\DataOperation;
-use Illuminate\Routing\Route;
+use App\Models\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Validator;
 
 trait Tool
 {
     public function success($code = 200, $msg = 'success')
     {
-        return response()->json(
-            [
-                'msg' => $msg,
-                'code' => $code
-            ]
-            , 200);
+        $data = [
+            'msg' => $msg,
+            'code' => $code
+        ];
+        $this->writeLog($data);
+        return response()->json($data, 200);
     }
 
     public function successWithMsg($msg = 'success', $code = 200)
     {
-        return response()->json(
-            [
-                'msg' => $msg,
-                'code' => $code
-            ]
-            , 200);
+        $data = [
+            'msg' => $msg,
+            'code' => $code
+        ];
+        $this->writeLog($data);
+        return response()->json($data, 200);
     }
 
     public function successWithResult($result, $code = 200, $msg = 'success')
     {
-        return response()->json(
-            [
-                'result' => $result,
-                'msg' => $msg,
-                'code' => $code
-            ]
-            , 200);
+        $data = [
+            'result' => $result,
+            'msg' => $msg,
+            'code' => $code
+        ];
+        $this->writeLog($data);
+        return response()->json($data, 200);
     }
 
     public function successWithData($data, $code = 200, $msg = 'success')
     {
-        return response()->json([
+        $data = [
             'data' => $data,
             'msg' => $msg,
             'code' => $code
-        ], 200);
+        ];
+        $this->writeLog($data);
+        return response()->json($data, 200);
     }
 
     public function error($code = 404, $msg = 'error')
     {
-        return response()->json(
-            [
-                'msg' => $msg,
-                'code' => $code
-            ]
-            , 200);
+        $data = [
+            'msg' => $msg,
+            'code' => $code
+        ];
+        $this->writeLog($data);
+        return response()->json($data, 200);
     }
 
     public function errorWithMsg($msg = 'error', $code = 404)
     {
-        return response()->json(
-            [
-                'msg' => $msg,
-                'code' => $code
-            ], 200);
+        $data = [
+            'msg' => $msg,
+            'code' => $code
+        ];
+        $this->writeLog($data);
+        return response()->json($data, 200);
     }
 
-    public function log($type, $route_name, $desc)
+    public function writeLog($resp = [])
     {
-        $data = [
-            'type' => $type,
-            'route_name' => $route_name,
-            'desc' => $desc
-        ];
-        event(new DataOperation($data));
+        $userName = "";
+        $request = request();
+        if (Auth::check()) {
+            $user = $request->user();
+            $userName = $user->name;
+        }
+        if ('GET' != $request->method()) {
+            $route = explode('@',Route::currentRouteName());
+            $routeName = isset($route[1]) ? $route[1] : "";
+            Log::insert([
+                "user_name" => $userName,
+                "operation" => $routeName,
+                "method" => $request->method(),
+                "params" => json_encode($request->all(), JSON_UNESCAPED_UNICODE),
+                "response" => json_encode($resp, JSON_UNESCAPED_UNICODE),
+                "ip" => $request->ip(),
+                "old" => "",
+                "url" => $request->url(),
+                "action" => Route::currentRouteAction(),
+            ]);
+        }
     }
 
     public function isAdmin()

@@ -9,7 +9,7 @@
     "e2e": "node test/e2e/runner.js",
     "test": "npm run unit && npm run e2e",
     "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs",
-    "build": "gulp"
+    "build": "node build/build.js && gulp"
   },
   "dependencies": {
     "@smallwei/avue": "^2.1.0",
@@ -17,7 +17,6 @@
     "babel-plugin-component": "0.10.1",
     "babel-polyfill": "6.26.0",
     "element-ui": "2.12.0",
-    "gulp": "3.9.1",
     "gulp-concat": "2.6.1",
     "gulp-load-plugins": "1.5.0",
     "gulp-replace": "0.6.1",
@@ -58,6 +57,7 @@
     "extract-text-webpack-plugin": "3.0.0",
     "file-loader": "1.1.4",
     "friendly-errors-webpack-plugin": "1.6.1",
+    "gulp": "^4.0.2",
     "html-webpack-plugin": "2.30.1",
     "jest": "21.2.0",
     "jest-serializer-vue": "0.3.0",

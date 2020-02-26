@@ -2,7 +2,10 @@
   <div class="mod-log">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input v-model="dataForm.key" placeholder="用户名" clearable></el-input>
+        <el-input clearable placeholder="用户名" v-model="dataForm.key"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-input clearable placeholder="操作" v-model="dataForm.operation"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
@@ -11,71 +14,81 @@
     <el-table
       :data="dataList"
       border
-      v-loading="dataListLoading"
-      style="width: 100%">
+      style="width: 100%"
+      v-loading="dataListLoading">
       <el-table-column
+        align="center"
+        header-align="center"
+        label="ID"
         prop="id"
-        header-align="center"
-        align="center"
-        width="80"
-        label="ID">
+        width="80">
       </el-table-column>
       <el-table-column
-        prop="userName"
-        header-align="center"
         align="center"
-        label="用户名">
+        header-align="center"
+        label="用户名"
+        prop="user_name"
+        width="90">
       </el-table-column>
       <el-table-column
-        prop="operation"
-        header-align="center"
         align="center"
-        label="用户操作">
+        header-align="center"
+        label="用户操作"
+        prop="operation">
       </el-table-column>
       <el-table-column
+        :show-overflow-tooltip="true"
+        align="center"
+        header-align="center"
+        label="请求方法"
         prop="method"
-        header-align="center"
-        align="center"
-        width="150"
-        :show-overflow-tooltip="true"
-        label="请求方法">
+        width="90">
       </el-table-column>
       <el-table-column
+        :show-overflow-tooltip="true"
+        align="center"
+        header-align="center"
+        label="请求参数"
         prop="params"
-        header-align="center"
-        align="center"
-        width="150"
+        width="150">
+      </el-table-column>
+      <el-table-column
         :show-overflow-tooltip="true"
-        label="请求参数">
-      </el-table-column>
-      <el-table-column
-        prop="time"
-        header-align="center"
         align="center"
-        label="执行时长(毫秒)">
+        header-align="center"
+        label="响应数据"
+        prop="response"
+        width="150">
       </el-table-column>
       <el-table-column
+        align="center"
+        header-align="center"
+        label="请求地址"
+        prop="url"
+        width="150">
+      </el-table-column>
+      <el-table-column
+        align="center"
+        header-align="center"
+        label="IP地址"
         prop="ip"
-        header-align="center"
-        align="center"
-        width="150"
-        label="IP地址">
+        width="120">
       </el-table-column>
       <el-table-column
-        prop="createTime"
-        header-align="center"
         align="center"
-        width="180"
-        label="创建时间">
+        header-align="center"
+        label="创建时间"
+        prop="create_time"
+        width="180">
       </el-table-column>
     </el-table>
     <el-pagination
-      @size-change="sizeChangeHandle"
-      @current-change="currentChangeHandle"
       :current-page="pageIndex"
-      :page-sizes="[10, 20, 50, 100]"
       :page-size="pageSize"
+      :page-sizes="[10, 20, 50, 100]"
       :total="totalPage"
+      @current-change="currentChangeHandle"
+      @size-change="sizeChangeHandle"
       layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
   </div>
@@ -83,10 +96,11 @@
 
 <script>
   export default {
-    data () {
+    data() {
       return {
         dataForm: {
-          key: ''
+          key: '',
+          operation: ''
         },
         dataList: [],
         pageIndex: 1,
@@ -96,24 +110,25 @@
         selectionDataList: []
       }
     },
-    created () {
+    created() {
       this.getDataList()
     },
     methods: {
       // 获取数据列表
-      getDataList () {
+      getDataList() {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/web/sys/controller/log/list'),
+          url: this.$http.adornUrl('/api/logs'),
           method: 'get',
           params: this.$http.adornParams({
             'pageNum': this.pageIndex,
             'pageSize': this.pageSize,
-            'userName': this.dataForm.key || null
+            'user_name': this.dataForm.key || null,
+            'operation': this.dataForm.operation || null
           })
         }).then(({data}) => {
           if (data && data.code === 200) {
-            this.dataList = data.result.list
+            this.dataList = data.result.data
             this.totalPage = data.result.total
           } else {
             this.dataList = []
@@ -123,13 +138,13 @@
         })
       },
       // 每页数
-      sizeChangeHandle (val) {
+      sizeChangeHandle(val) {
         this.pageSize = val
         this.pageIndex = 1
         this.getDataList()
       },
       // 当前页
-      currentChangeHandle (val) {
+      currentChangeHandle(val) {
         this.pageIndex = val
         this.getDataList()
       }
