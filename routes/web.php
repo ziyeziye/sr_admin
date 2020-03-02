@@ -43,7 +43,7 @@ Route::group(['prefix'=>'/api'], function () {
         Route::get('/menus/group', "MenuController@group")->name('menu.group');
         Route::get('/menus/{id}', "MenuController@info")->name('menu.info');
         Route::post('/menus', "MenuController@save")->name('menu.save@新增菜单');
-        Route::put('/menus/{id}', "MenuController@update")->name('menu.update@修改角色');
+        Route::put('/menus/{id}', "MenuController@update")->name('menu.update@修改菜单');
         Route::delete('/menus', "MenuController@delete")->name('menu.delete@删除菜单');
 
     });

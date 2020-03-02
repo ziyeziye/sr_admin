@@ -4,6 +4,7 @@ var path = require('path');
 var del  = require('del');
 
 var distPath    = path.resolve('./dist');
+var staticPath = path.resolve('./static');
 var version     = ''; // 版本号
 var versionPath = ''; // 版本号路径
 var env         = ''; // 运行环境
@@ -23,8 +24,8 @@ var env         = ''; // 运行环境
 // 编译
 gulp.task('build',function(done) {
   console.log('build--start')
-  $.shell.task([ 'node build/build.js' ],done())
-    done();
+  $.shell.task([ 'node build/build.js' ])
+  done()
 });
 
 // 创建版本号目录
@@ -32,7 +33,7 @@ gulp.task('build',function(done) {
 //   return gulp.src(`${distPath}/static/**/*`)
 //     .pipe(gulp.dest(`${versionPath}/static/`))
 // });
-gulp.task('create:versionCatalog',  function () {
+gulp.task('create:versionCatalog', function () {
   console.log('create:versionCatalog===')
   return gulp.src(`${distPath}/static/**/*`)
     .pipe(gulp.dest(`${versionPath}/static/`))
@@ -45,12 +46,12 @@ gulp.task('create:versionCatalog',  function () {
 //     .pipe(gulp.dest(`${versionPath}/static/js/`))
 // });
 
-gulp.task('replace:cdnUrl', function () {
-  console.log('replace:cdnUrl---',`"${require('./config').build.assetsPublicPath}"`)
-  return gulp.src(`${distPath}/static/js/manifest.js`)
+gulp.task('replace:cdnUrl', gulp.series('create:versionCatalog', function () {
+  console.log('replace:cdnUrl---')
+  return gulp.src(`${versionPath}/static/js/manifest.js`)
     .pipe($.replace(new RegExp(`"${require('./config').build.assetsPublicPath}"`, 'g'), 'window.SITE_CONFIG.cdnUrl + "/"'))
     .pipe(gulp.dest(`${versionPath}/static/js/`))
-});
+}));
 //
 // // 替换${versionPath}/static/config/index-${env}.js window.SITE_CONFIG['version']配置变量
 // gulp.task('replace:version', ['create:versionCatalog'], function () {
@@ -59,12 +60,12 @@ gulp.task('replace:cdnUrl', function () {
 //     .pipe(gulp.dest(`${versionPath}/static/config/`))
 // });
 
-gulp.task('replace:version', function () {
+gulp.task('replace:version', gulp.series('create:versionCatalog', function () {
   console.log('replace:version====', env)
-  return gulp.src(`${versionPath}/static/config/index-${env}.js`)
+  return gulp.src(`${staticPath}/config/index-${env}.js`)
     .pipe($.replace(/window.SITE_CONFIG\['version'\] = '.*'/g, `window.SITE_CONFIG['version'] = '${version}'`))
     .pipe(gulp.dest(`${versionPath}/static/config/`))
-});
+}));
 //
 // // 合并${versionPath}/static/config/[index-${env}, init].js 至 ${distPath}/config/index.js
 // gulp.task('concat:config', ['replace:version'], function () {
@@ -72,12 +73,12 @@ gulp.task('replace:version', function () {
 //     .pipe($.concat('index.js'))
 //     .pipe(gulp.dest(`${distPath}/config/`))
 // });
-gulp.task('concat:config', function () {
+gulp.task('concat:config', gulp.series('replace:version', function () {
   console.log('contact===')
-  return gulp.src([`${versionPath}/static/config/index-${env}.js`, `${versionPath}/static/config/init.js`])
+  return gulp.src([`${staticPath}/config/index-${env}.js`, `${staticPath}/config/init.js`])
     .pipe($.concat('index.js'))
     .pipe(gulp.dest(`${distPath}/config/`))
-});
+}));
 //
 // // 清空
 gulp.task('clean', function () {
@@ -85,7 +86,7 @@ gulp.task('clean', function () {
   return del([versionPath])
 });
 // 'clean', 'build', 'create:versionCatalog', 'replace:cdnUrl','replace:version', 'concat:config',
-gulp.task('default', gulp.series('clean','create:versionCatalog','replace:cdnUrl','replace:version', 'concat:config', function (done) {
+gulp.task('default', gulp.series('clean', 'build', 'create:versionCatalog','replace:version', 'concat:config', function (done) {
   // 获取环境配置
   console.log('starting')
   // 开始打包编译

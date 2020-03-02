@@ -26,11 +26,11 @@ class MenuController extends BaseController
         //验证参数
         $check = $this->_valid([
             'name' => 'required',
-            'url' => 'required',
+            'type' => 'required',
             'parent_id' => 'required',
         ], [
             'name.required' => '请输入菜单名',
-            'url.required' => '请输入路由',
+            'type.required' => '类型错误',
             'parent_id.required' => '请选择上级',
         ]);
 
@@ -38,12 +38,18 @@ class MenuController extends BaseController
             return $this->errorWithMsg($check, 405);
         }
 
+        $type = $request->input("type",1);
+        $url = $request->input("url");
+        if ($type==1&&empty($url)) {
+            return $this->errorWithMsg("请输入菜单URL", 405);
+        }
+
         $data = [
             'parent_id' => $request->input("parent_id", 0),
             'name' => $request->input("name"),
-            'url' => $request->input("url"),
+            'url' => $url,
             'perms' => $request->input("perms"),
-            'type' => $request->input("type"),
+            'type' => $type,
             'icon' => $request->input("icon"),
         ];
 
@@ -56,11 +62,11 @@ class MenuController extends BaseController
         //验证参数
         $check = $this->_valid([
             'name' => 'required',
-            'url' => 'required',
+            'type' => 'required',
             'parent_id' => 'required',
         ], [
             'name.required' => '请输入菜单名',
-            'url.required' => '请输入路由',
+            'type.required' => '类型错误',
             'parent_id.required' => '请选择上级',
         ]);
 
@@ -68,12 +74,18 @@ class MenuController extends BaseController
             return $this->errorWithMsg($check, 405);
         }
 
+        $type = $request->input("type",1);
+        $url = $request->input("url");
+        if ($type==1&&empty($url)) {
+            return $this->errorWithMsg("请输入菜单URL", 405);
+        }
+
         $data = [
             'parent_id' => $request->input("parent_id", 0),
             'name' => $request->input("name"),
-            'url' => $request->input("url"),
+            'url' => $url,
             'perms' => $request->input("perms"),
-            'type' => $request->input("type"),
+            'type' => $type,
             'icon' => $request->input("icon"),
         ];
 
