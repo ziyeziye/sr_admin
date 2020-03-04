@@ -4,8 +4,7 @@ namespace App\Models;
 
 class Menu extends BaseModel
 {
-    const CREATED_AT = false;
-    const UPDATED_AT = false;
+    public $timestamps = false;
 
     protected $fillable = [
         'id',
@@ -15,6 +14,7 @@ class Menu extends BaseModel
         'perms',
         'type',
         'icon',
+        'orders',
     ];
 
     protected $appends = [

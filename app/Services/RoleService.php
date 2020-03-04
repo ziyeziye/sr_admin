@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Admin;
+use App\Models\Manager;
 use App\Models\Menu;
 use App\Models\Role;
 use App\Models\RoleMenu;
@@ -70,7 +70,8 @@ class RoleService extends BaseService
         $permissions = [];
         $menus = [];
         if (is_string($user) && $user == "admin") {
-            Menu::all()->map(function ($menu) use (&$permissions, &$menus) {
+            Menu::where([])->orderBy("orders","asc")->orderBy("id","asc")
+                ->get()->map(function ($menu) use (&$permissions, &$menus) {
                 if (in_array($menu->type, [0, 1])) {
                     $menus[] = $menu->toArray();
                 }
@@ -82,7 +83,8 @@ class RoleService extends BaseService
             });
         } else {
             Auth::user()->roles->map(function ($role) use (&$permissions, &$menus) {
-                $role->menus()->orderBy("orders","asc")->get()->map(function ($menu) use (&$permissions, &$menus) {
+                $role->menus()->orderBy("orders","asc")->orderBy("id","asc")
+                    ->get()->map(function ($menu) use (&$permissions, &$menus) {
                     if (in_array($menu->type, [0, 1])) {
                         $menus[] = $menu->toArray();
                     }

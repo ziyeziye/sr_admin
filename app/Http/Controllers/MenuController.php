@@ -51,6 +51,7 @@ class MenuController extends BaseController
             'perms' => $request->input("perms"),
             'type' => $type,
             'icon' => $request->input("icon"),
+            'orders' => $request->input("orders",999),
         ];
 
         $result = MenuService::save($data);
@@ -87,6 +88,7 @@ class MenuController extends BaseController
             'perms' => $request->input("perms"),
             'type' => $type,
             'icon' => $request->input("icon"),
+            'orders' => $request->input("orders",999),
         ];
 
         $result = MenuService::update($data, $id);

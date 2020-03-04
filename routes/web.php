@@ -15,6 +15,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::get('/web/captcha', 'CommonController@getCaptcha')->name('common.captcha');
+Route::post('/web/upload', 'CommonController@upload')->name('common.upload@上传图片');
 
 Route::group(['prefix'=>'/api'], function () {
     Route::get('/refresh', "Auth\AdminLoginController@refresh")->name('admin.refresh@刷新token');
@@ -30,14 +31,14 @@ Route::group(['prefix'=>'/api'], function () {
         Route::delete('/roles', "RoleController@delete")->name('role.delete@删除角色');
         Route::get('/roles/{id}/menu', "RoleController@roleMenu")->name('role.role_menu');
 
-        Route::get('/admin', "AdminController@table")->name('admin.list');
-        Route::post('/admin', "AdminController@save")->name('admin.save@新增管理员');
-        Route::put('/admin/{id}', "AdminController@update")->name('admin.update@修改管理员');
-        Route::delete('/admin', "AdminController@delete")->name('admin.delete@删除管理员');
-        Route::get('/admin/{id}/role', "AdminController@userRole")->name('admin.user_role');
-        Route::post('/admin/password', "AdminController@password")->name('admin.password@修改密码');
-        Route::get('/admin/login_info', "AdminController@loginInfo")->name('admin.login_info');
-        Route::get('/admin/login_perms', "AdminController@loginPerms")->name('admin.login_perms');
+        Route::get('/managers', "ManagerController@table")->name('manager.list');
+        Route::post('/managers', "ManagerController@save")->name('manager.save@新增管理员');
+        Route::put('/managers/{id}', "ManagerController@update")->name('manager.update@修改管理员');
+        Route::delete('/managers', "ManagerController@delete")->name('manager.delete@删除管理员');
+        Route::get('/managers/{id}/role', "ManagerController@userRole")->name('manager.user_role');
+        Route::post('/managers/password', "ManagerController@password")->name('manager.password@修改密码');
+        Route::get('/managers/login_info', "ManagerController@loginInfo")->name('manager.login_info');
+        Route::get('/managers/login_perms', "ManagerController@loginPerms")->name('manager.login_perms');
 
         Route::get('/menus', "MenuController@table")->name('menu.list');
         Route::get('/menus/group', "MenuController@group")->name('menu.group');
@@ -45,6 +46,7 @@ Route::group(['prefix'=>'/api'], function () {
         Route::post('/menus', "MenuController@save")->name('menu.save@新增菜单');
         Route::put('/menus/{id}', "MenuController@update")->name('menu.update@修改菜单');
         Route::delete('/menus', "MenuController@delete")->name('menu.delete@删除菜单');
+
 
     });
 });

@@ -10,6 +10,7 @@
     "require": {
         "php": "^7.2",
         "barryvdh/laravel-cors": "^1.0",
+        "dflydev/apache-mime-types": "^1.0",
         "fideloper/proxy": "^4.0",
         "gregwar/captcha": "^1.1",
         "laravel/framework": "^6.2",

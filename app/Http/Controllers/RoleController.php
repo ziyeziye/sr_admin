@@ -24,9 +24,9 @@ class RoleController extends BaseController
         $check = $this->_valid([
             'role_name' => 'required|min:3|max:50',
         ], [
-            'name.required' => '请输入角色名',
-            'name.min' => '角色最少输入3个字符',
-            'name.max' => '角色太长了',
+            'role_name.required' => '请输入角色名',
+            'role_name.min' => '角色最少输入3个字符',
+            'role_name.max' => '角色太长了',
         ]);
 
         if (true !== $check) {
@@ -51,9 +51,9 @@ class RoleController extends BaseController
         $check = $this->_valid([
             'role_name' => 'required|min:3|max:50',
         ], [
-            'name.required' => '请输入角色名',
-            'name.min' => '角色最少输入3个字符',
-            'name.max' => '角色太长了',
+            'role_name.required' => '请输入角色名',
+            'role_name.min' => '角色最少输入3个字符',
+            'role_name.max' => '角色太长了',
         ]);
 
         if (true !== $check) {

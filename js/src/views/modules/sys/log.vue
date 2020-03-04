@@ -96,7 +96,7 @@
 
 <script>
   export default {
-    data() {
+    data () {
       return {
         dataForm: {
           key: '',
@@ -110,12 +110,12 @@
         selectionDataList: []
       }
     },
-    created() {
+    created () {
       this.getDataList()
     },
     methods: {
       // 获取数据列表
-      getDataList() {
+      getDataList () {
         this.dataListLoading = true
         this.$http({
           url: this.$http.adornUrl('/api/logs'),
@@ -138,13 +138,13 @@
         })
       },
       // 每页数
-      sizeChangeHandle(val) {
+      sizeChangeHandle (val) {
         this.pageSize = val
         this.pageIndex = 1
         this.getDataList()
       },
       // 当前页
-      currentChangeHandle(val) {
+      currentChangeHandle (val) {
         this.pageIndex = val
         this.getDataList()
       }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\UploadsManager;
 use Gregwar\Captcha\CaptchaBuilder;
 use Gregwar\Captcha\PhraseBuilder;
 use Illuminate\Http\Request;
@@ -10,12 +11,13 @@ class CommonController extends BaseController
 {
     /**
      * 输出验证码
+     * @param Request $request
      */
     public function getCaptcha(Request $request)
     {
         $phrase = new PhraseBuilder();
         // 设置验证码位数
-        $code = $phrase->build(4,'1234567890');
+        $code = $phrase->build(4, '1234567890');
         // 生成验证码图片的Builder对象,配置相应属性
         $builder = new CaptchaBuilder($code, $phrase);
         // 设置背景颜色25,25,112
@@ -40,6 +42,18 @@ class CommonController extends BaseController
         header('Cache-Control: no-cache, must-revalidate');
         header('Content-Type:image/jpeg');
         $builder->output();
+    }
+
+    public function upload(Request $request, UploadsManager $manager)
+    {
+        $file = $request->file('file');
+        $path = $manager->uploadImg($file);
+
+        if ($path) {
+            return $this->successWithResult(["path" => $path, "src" => env('APP_URL') . $path]);
+        } else {
+            return $this->errorWithMsg("上传失败");
+        }
     }
 
 }

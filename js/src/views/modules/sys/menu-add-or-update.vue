@@ -98,7 +98,7 @@
           parentName: '',
           url: '',
           perms: '',
-          orders: 0,
+          orders: 999,
           icon: '',
           iconList: []
         },

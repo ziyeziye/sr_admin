@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\AdminService;
+use App\Services\ManagerService;
 use App\Services\RoleService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class AdminController extends BaseController
+class ManagerController extends BaseController
 {
     public function table(Request $request)
     {
         //获取数据
         $page = get_page();
         $where = request()->input();
-        $result = AdminService::table($where, ...$page);
+        $result = ManagerService::table($where, ...$page);
         return $this->successWithResult($result);
     }
 
@@ -22,7 +22,7 @@ class AdminController extends BaseController
     {
         //验证参数
         $check = $this->_valid([
-            'name' => 'required|unique:admins|min:3|max:50',
+            'name' => 'required|unique:managers|min:3|max:50',
         ], [
             'name.required' => '请输入用户名',
             'name.unique' => '用户名重复',
@@ -50,7 +50,7 @@ class AdminController extends BaseController
             'roleIdList' => $request->input("roleIdList"),
         ];
 
-        $result = AdminService::save($data);
+        $result = ManagerService::save($data);
         return $this->successWithResult($result);
 
     }
@@ -82,7 +82,7 @@ class AdminController extends BaseController
             $data["password"] = $password;
         }
 
-        $result = AdminService::update($data, $id);
+        $result = ManagerService::update($data, $id);
         if (false === $result) {
             return $this->errorWithMsg("修改失败");
         }
@@ -92,7 +92,7 @@ class AdminController extends BaseController
     public function delete(Request $request)
     {
         $ids = $request->input();
-        $result = AdminService::delete($ids);
+        $result = ManagerService::delete($ids);
         if (false === $result) {
             return $this->errorWithMsg("删除失败");
         }
@@ -137,7 +137,7 @@ class AdminController extends BaseController
 
     public function userRole($id)
     {
-        $result = AdminService::userRole($id);
+        $result = ManagerService::userRole($id);
         return $this->successWithResult($result);
     }
 

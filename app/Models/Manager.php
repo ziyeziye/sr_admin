@@ -14,7 +14,7 @@ use Illuminate\Support\Str;
  *
  * @mixin Builder
  */
-class Admin extends Authenticatable
+class Manager extends Authenticatable
 {
     use ModelTraits;
     use Notifiable;
@@ -76,6 +76,6 @@ class Admin extends Authenticatable
 
     public function roles()
     {
-        return $this->belongsToMany('App\Models\Role', 'admin_roles', 'admin_id', 'role_id')->withPivot('admin_id', 'role_id');
+        return $this->belongsToMany('App\Models\Role', 'manager_roles', 'admin_id', 'role_id')->withPivot('admin_id', 'role_id');
     }
 }

@@ -63,7 +63,7 @@
       // 获取当前管理员信息
       getUserInfo () {
         this.$http({
-          url: this.$http.adornUrl('/api/admin/login_info'),
+          url: this.$http.adornUrl('/api/managers/login_info'),
           method: 'get',
           params: this.$http.adornParams()
         }).then(({data}) => {
