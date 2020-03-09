@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@smallwei/avue": "^2.1.0",
-    "axios": "0.17.1",
+    "axios": "0.18.1",
     "babel-plugin-component": "0.10.1",
     "babel-polyfill": "6.26.0",
     "element-ui": "2.12.0",
