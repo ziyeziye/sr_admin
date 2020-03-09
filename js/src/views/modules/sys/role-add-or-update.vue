@@ -56,7 +56,7 @@
       init (id) {
         this.dataForm.id = id || 0
         this.$http({
-          url: this.$http.adornUrl('/api/menus'),
+          url: this.$http.adornUrl('/api/admin/menus'),
           method: 'get',
           params: this.$http.adornParams()
         }).then(({data}) => {
@@ -70,7 +70,7 @@
         }).then(() => {
           if (this.dataForm.id) {
             this.$http({
-              url: this.$http.adornUrl(`/api/roles/${this.dataForm.id}/menu`),
+              url: this.$http.adornUrl(`/api/admin/roles/${this.dataForm.id}/menu`),
               method: 'get',
               params: this.$http.adornParams({
                 'id': this.dataForm.id
@@ -94,7 +94,7 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl(`/api/roles${!this.dataForm.id ? '' : '/' + this.dataForm.id}`),
+              url: this.$http.adornUrl(`/api/admin/roles${!this.dataForm.id ? '' : '/' + this.dataForm.id}`),
               method: `${!this.dataForm.id ? 'post' : 'put'}`,
               data: this.$http.adornData({
                 'id': this.dataForm.id || null,

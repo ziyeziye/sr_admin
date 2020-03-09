@@ -68,7 +68,7 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl('/api/login'),
+              url: this.$http.adornUrl('/api/admin/login'),
               method: 'post',
               data: this.$http.adornData({
                 'name': this.dataForm.userName,

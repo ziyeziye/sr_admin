@@ -1,14 +1,14 @@
 <template>
-  <div class="mod-user">
+  <div>
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input clearable placeholder="用户名" v-model="dataForm.userName"></el-input>
+        <el-input clearable placeholder="名称" v-model="dataForm.userName"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button @click="addOrUpdateHandle()" type="primary" v-if="isAuth('sys:user:save')">新增</el-button>
+        <el-button @click="addOrUpdateHandle()" type="primary" v-if="isAuth('web:partner:save')">新增</el-button>
         <el-button :disabled="dataListSelections.length <= 0" @click="deleteHandle()" type="danger"
-                   v-if="isAuth('sys:user:delete')">批量删除
+                   v-if="isAuth('web:partner:delete')">批量删除
         </el-button>
       </el-form-item>
     </el-form>
@@ -31,40 +31,38 @@
         prop="id"
         width="80">
       </el-table-column>
+
       <el-table-column
         align="center"
         header-align="center"
-        label="用户名"
-        prop="name">
+        label="名称"
+        prop="name"
+        width="150">
       </el-table-column>
-      <el-table-column
-        align="center"
-        header-align="center"
-        label="邮箱"
-        prop="email">
-      </el-table-column>
-      <el-table-column
-        align="center"
-        header-align="center"
-        label="手机号"
-        prop="mobile">
-      </el-table-column>
-      <el-table-column
-        align="center"
-        header-align="center"
-        label="状态"
-        prop="status">
+
+      <el-table-column align="center" header-align="center"
+                       label="图片" prop="img_src" width="75">
+        <!-- 图片的显示 -->
         <template slot-scope="scope">
-          <el-tag size="small" type="danger" v-if="scope.row.status === 0">禁用</el-tag>
-          <el-tag size="small" v-else>正常</el-tag>
+          <img :src="scope.row.img_src" width="50"/>
         </template>
       </el-table-column>
+
+      <el-table-column
+        :show-overflow-tooltip="true"
+        align="center"
+        header-align="center"
+        label="链接"
+        prop="href"
+      >
+      </el-table-column>
+
       <el-table-column
         align="center"
         header-align="center"
         label="创建时间"
         prop="create_time"
-        width="180">
+        width="150">
       </el-table-column>
       <el-table-column
         align="center"
@@ -73,10 +71,10 @@
         label="操作"
         width="150">
         <template slot-scope="scope">
-          <el-button @click="addOrUpdateHandle(scope.row.id)" size="small" type="text" v-if="isAuth('sys:user:update')">
+          <el-button @click="addOrUpdateHandle(scope.row.id)" size="small" type="text" v-if="isAuth('web:partner:update')">
             修改
           </el-button>
-          <el-button @click="deleteHandle(scope.row.id)" size="small" type="text" v-if="isAuth('sys:user:delete')">删除
+          <el-button @click="deleteHandle(scope.row.id)" size="small" type="text" v-if="isAuth('web:partner:delete')">删除
           </el-button>
         </template>
       </el-table-column>
@@ -96,7 +94,7 @@
 </template>
 
 <script>
-  import AddOrUpdate from './user-add-or-update'
+  import AddOrUpdate from './partner-add-or-update'
 
   export default {
     data () {
@@ -124,7 +122,7 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/api/admin/managers'),
+          url: this.$http.adornUrl('/api/admin/partners'),
           method: 'get',
           params: this.$http.adornParams({
             'pageNum': this.pageIndex,
@@ -175,7 +173,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/api/admin/managers'),
+            url: this.$http.adornUrl('/api/admin/partners'),
             method: 'delete',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {

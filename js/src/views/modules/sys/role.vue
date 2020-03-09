@@ -109,7 +109,7 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/api/roles'),
+          url: this.$http.adornUrl('/api/admin/roles'),
           method: 'get',
           params: this.$http.adornParams({
             'pageNum': this.pageIndex,
@@ -160,7 +160,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/api/roles'),
+            url: this.$http.adornUrl('/api/admin/roles'),
             method: 'delete',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {

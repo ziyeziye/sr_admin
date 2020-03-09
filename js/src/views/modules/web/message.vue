@@ -1,29 +1,41 @@
 <template>
-  <div class="mod-user">
+  <div>
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input clearable placeholder="用户名" v-model="dataForm.userName"></el-input>
+        <el-input clearable placeholder="内容" v-model="dataForm.userName"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button @click="addOrUpdateHandle()" type="primary" v-if="isAuth('sys:user:save')">新增</el-button>
+        <el-button @click="addOrUpdateHandle()" type="primary" v-if="isAuth('web:message:save')">新增</el-button>
         <el-button :disabled="dataListSelections.length <= 0" @click="deleteHandle()" type="danger"
-                   v-if="isAuth('sys:user:delete')">批量删除
+                   v-if="isAuth('web:message:delete')">批量删除
         </el-button>
       </el-form-item>
     </el-form>
     <el-table
       :data="dataList"
       @selection-change="selectionChangeHandle"
-      border
       style="width: 100%;"
       v-loading="dataListLoading">
       <el-table-column
         align="center"
         header-align="center"
         type="selection"
-        width="50">
+        width="28">
       </el-table-column>
+      <el-table-column type="expand" width="20">
+        <template slot-scope="props">
+          <el-form class="demo-table-expand" label-position="left">
+            <el-form-item label="内容：">
+              <span>{{ props.row.content }}</span>
+            </el-form-item>
+            <el-form-item label="回复：">
+              <span>{{ props.row.reply }}</span>
+            </el-form-item>
+          </el-form>
+        </template>
+      </el-table-column>
+
       <el-table-column
         align="center"
         header-align="center"
@@ -31,41 +43,28 @@
         prop="id"
         width="80">
       </el-table-column>
+
       <el-table-column
-        align="center"
         header-align="center"
-        label="用户名"
-        prop="name">
+        label="内容"
+        prop="content">
       </el-table-column>
+
       <el-table-column
-        align="center"
+        :show-overflow-tooltip="true"
         header-align="center"
-        label="邮箱"
-        prop="email">
+        label="回复"
+        prop="reply">
       </el-table-column>
-      <el-table-column
-        align="center"
-        header-align="center"
-        label="手机号"
-        prop="mobile">
-      </el-table-column>
-      <el-table-column
-        align="center"
-        header-align="center"
-        label="状态"
-        prop="status">
-        <template slot-scope="scope">
-          <el-tag size="small" type="danger" v-if="scope.row.status === 0">禁用</el-tag>
-          <el-tag size="small" v-else>正常</el-tag>
-        </template>
-      </el-table-column>
+
       <el-table-column
         align="center"
         header-align="center"
         label="创建时间"
         prop="create_time"
-        width="180">
+        width="150">
       </el-table-column>
+
       <el-table-column
         align="center"
         fixed="right"
@@ -73,10 +72,10 @@
         label="操作"
         width="150">
         <template slot-scope="scope">
-          <el-button @click="addOrUpdateHandle(scope.row.id)" size="small" type="text" v-if="isAuth('sys:user:update')">
+          <el-button @click="addOrUpdateHandle(scope.row.id)" size="small" type="text" v-if="isAuth('web:message:update')">
             修改
           </el-button>
-          <el-button @click="deleteHandle(scope.row.id)" size="small" type="text" v-if="isAuth('sys:user:delete')">删除
+          <el-button @click="deleteHandle(scope.row.id)" size="small" type="text" v-if="isAuth('web:message:delete')">删除
           </el-button>
         </template>
       </el-table-column>
@@ -84,7 +83,7 @@
     <el-pagination
       :current-page="pageIndex"
       :page-size="pageSize"
-      :page-sizes="[10, 20, 50, 100]"
+      :page-sizes="[5, 10, 15, 50]"
       :total="totalPage"
       @current-change="currentChangeHandle"
       @size-change="sizeChangeHandle"
@@ -96,7 +95,7 @@
 </template>
 
 <script>
-  import AddOrUpdate from './user-add-or-update'
+  import AddOrUpdate from './message-add-or-update'
 
   export default {
     data () {
@@ -106,7 +105,7 @@
         },
         dataList: [],
         pageIndex: 1,
-        pageSize: 10,
+        pageSize: 5,
         totalPage: 0,
         dataListLoading: false,
         dataListSelections: [],
@@ -124,12 +123,12 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/api/admin/managers'),
+          url: this.$http.adornUrl('/api/admin/messages'),
           method: 'get',
           params: this.$http.adornParams({
             'pageNum': this.pageIndex,
             'pageSize': this.pageSize,
-            'name': this.dataForm.userName || null
+            'content': this.dataForm.userName || null
           })
         }).then(({data}) => {
           if (data && data.code === 200) {
@@ -175,7 +174,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/api/admin/managers'),
+            url: this.$http.adornUrl('/api/admin/messages'),
             method: 'delete',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {

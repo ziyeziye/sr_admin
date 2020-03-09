@@ -127,7 +127,7 @@
       init (id) {
         this.dataForm.id = id || 0
         this.$http({
-          url: this.$http.adornUrl('/api/menus/group'),
+          url: this.$http.adornUrl('/api/admin/menus/group'),
           method: 'get',
           params: this.$http.adornParams()
         }).then(({data}) => {
@@ -144,7 +144,7 @@
           } else {
             // 修改
             this.$http({
-              url: this.$http.adornUrl(`/api/menus/${this.dataForm.id}`),
+              url: this.$http.adornUrl(`/api/admin/menus/${this.dataForm.id}`),
               method: 'get',
               params: this.$http.adornParams({
                 'id': this.dataForm.id
@@ -182,7 +182,7 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl(`/api/menus${!this.dataForm.id ? '' : '/' + this.dataForm.id}`),
+              url: this.$http.adornUrl(`/api/admin/menus${!this.dataForm.id ? '' : '/' + this.dataForm.id}`),
               method: `${!this.dataForm.id ? 'post' : 'put'}`,
               data: this.$http.adornData({
                 'id': this.dataForm.id || undefined,

@@ -118,7 +118,7 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/api/logs'),
+          url: this.$http.adornUrl('/api/admin/logs'),
           method: 'get',
           params: this.$http.adornParams({
             'pageNum': this.pageIndex,

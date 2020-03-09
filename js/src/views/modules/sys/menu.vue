@@ -118,7 +118,7 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/api/menus'),
+          url: this.$http.adornUrl('/api/admin/menus'),
           method: 'get',
           params: this.$http.adornParams()
         }).then(({data}) => {
@@ -141,7 +141,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl(`/api/menus`),
+            url: this.$http.adornUrl(`/api/admin/menus`),
             method: 'delete',
             data: this.$http.adornData(id, false)
           }).then(({data}) => {
